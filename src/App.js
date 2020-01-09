@@ -6,10 +6,7 @@ class App extends React.Component {
     super(props);
     this.state = {timer: 0, intervalId: null, startButton: true, pauseButton: false, resetButton: false};
   }
-  componentDidMount()
-  {
-
-  }
+ 
   handleStart= (e) => { 
     this.setState({intervalId: setInterval(()=>{
       this.setState({timer: this.state.timer+1});
