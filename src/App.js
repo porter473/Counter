@@ -4,7 +4,7 @@ import './App.css';
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {timer: 0, intervalId: null, startButton: true, pauseButton: false, resetButton: false};
+    this.state = {timer: 0, intervalId: null, startButton: true, pauseButton: false, resetButton: false, minute: 0};
   }
  
   handleStart= (e) => { 
@@ -12,26 +12,40 @@ class App extends React.Component {
       this.setState({timer: this.state.timer+1});
     },1000) 
   }) 
-  this.setState({startButton: false, pauseButton: true, resetButton: true})
-}
+  this.setState({startButton: false, pauseButton: true, resetButton: true}) 
+  }
 
   handlePause= (e) => {
     clearInterval(this.state.intervalId);
 
   this.setState({startButton: true, pauseButton: false, resetButton: true})
   }
+
   handleReset= (e) => {
     clearInterval(this.state.intervalId);
     this.setState({timer: 0,startButton: true, pauseButton: false, resetButton: false});
-
   }
+
+  componentDidUpdate(){
+    if(this.state.timer%60===0&&this.state.timer>1)
+    {
+      this.setState({minute: this.state.minute +1, timer: 0})
+    }
+  }
+
   render() {
+
     return (
       <div className="App">
         <h1>Counter</h1>
-        <p>
+        <span>
+          {this.state.minute}
+        </span>
+        <span> min </span>
+        <span >
           {this.state.timer}
-        </p>
+        </span>
+        <span> sec</span>
         <div className="Buttons">
           <button id="start" disabled={!this.state.startButton} onClick={(e)=>this.handleStart(e)}>
             Start
