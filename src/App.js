@@ -1,34 +1,32 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState} from 'react';
 import './App.css';
 
 function App () {
   
   const [timer, setTimer] = useState(0);
-  const [minute, setMinute] = useState(0);
   const [intervalId, setIntervalId] =  useState(null);
-  const [startButton, setStartButton] = useState(true);
-  const [pauseButton, setPauseButton] = useState(false);
-  const [resetButton, setResetButton] = useState(false);
+  const [isStartBtnEnabled, setStartButton] = useState(true);
+  const [isPauseBtnEnabled, setPauseButton] = useState(false);
+  const [isResetBtnEnabled, setResetButton] = useState(false);
 
   let handleStart = (e) => { 
-    
     const tempId = setInterval(() => {
       setTimer(prevTimer => prevTimer+1); 
-    }, 1000);
+    }, 100);
     setIntervalId(tempId);
     setStartButton(false);
     setPauseButton(true);
     setResetButton(true);
   }
 
-  let handlePause= (e) => {
+  let handlePause = (e) => {
     clearInterval(intervalId);
     setStartButton(true);
     setPauseButton(false);
     setResetButton(true);
    }
 
-  let handleReset= (e) => {
+  let handleReset = (e) => {
     clearInterval(intervalId);
     setTimer(0);
     setStartButton(true);
@@ -36,44 +34,32 @@ function App () {
     setResetButton(false);
   }
 
-
-  useEffect( ()=> {
-
-    if(timer%60===0&&timer>1)
-    {
-      setMinute(minute+1);
-      setTimer(0);
-    }
-
-  });
+  let buttons= () => {
+    return (
+      <div className="Buttons">
+        <button id="start" disabled={!isStartBtnEnabled} onClick={(e)=>handleStart(e)}>
+          Start
+        </button>
+        <button id="pause" disabled={!isPauseBtnEnabled} onClick={(e)=>handlePause(e)}>
+          Pause
+        </button>
+        <button id="reset" disabled={!isResetBtnEnabled} onClick={(e)=>handleReset(e)}>
+          Reset
+        </button> 
+      </div> 
+    );
+  }
 
   return (
     <div className="App">
       <h1>Counter</h1>
-      <span>
-        {minute}
-      </span>
+      <span>{Math.floor(timer/60)}</span>
       <span> min </span>
-      <span >
-        {timer}
-      </span>
+      <span>{timer%60}</span>
       <span> sec</span>
-      <div className="Buttons">
-        <button id="start" disabled={!startButton} onClick={handleStart}>
-          Start
-        </button>
-        <button id="pause" disabled={!pauseButton} onClick={handlePause}>
-          Pause
-        </button>
-        <button id="reset" disabled={!resetButton} onClick={handleReset}>
-          Reset
-        </button>
-      </div>      
+      {buttons()}    
     </div>
   );
-  
-  
 }
-
 
 export default App;
