@@ -1,70 +1,65 @@
-import React from 'react';
+import React, {useState} from 'react';
 import './App.css';
 
-class App extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {timer: 0, intervalId: null, startButton: true, pauseButton: false, resetButton: false, minute: 0};
-  }
- 
-  handleStart= (e) => { 
-    this.setState({intervalId: setInterval(()=>{
-      this.setState({timer: this.state.timer+1});
-    },1000) 
-  }) 
-  this.setState({startButton: false, pauseButton: true, resetButton: true}) 
-  }
+function App () {
+  
+  const [timer, setTimer] = useState(0);
+  const [intervalId, setIntervalId] =  useState(null);
+  const [isStartBtnEnabled, setStartButton] = useState(true);
+  const [isPauseBtnEnabled, setPauseButton] = useState(false);
+  const [isResetBtnEnabled, setResetButton] = useState(false);
 
-  handlePause= (e) => {
-    clearInterval(this.state.intervalId);
-
-  this.setState({startButton: true, pauseButton: false, resetButton: true})
+  let handleStart = (e) => { 
+    const tempId = setInterval(() => {
+      setTimer(prevTimer => prevTimer+1); 
+    }, 100);
+    setIntervalId(tempId);
+    setStartButton(false);
+    setPauseButton(true);
+    setResetButton(true);
   }
 
-  handleReset= (e) => {
-    clearInterval(this.state.intervalId);
-    this.setState({timer: 0,startButton: true, pauseButton: false, resetButton: false});
+  let handlePause = (e) => {
+    clearInterval(intervalId);
+    setStartButton(true);
+    setPauseButton(false);
+    setResetButton(true);
+   }
+
+  let handleReset = (e) => {
+    clearInterval(intervalId);
+    setTimer(0);
+    setStartButton(true);
+    setPauseButton(false);
+    setResetButton(false);
   }
 
-  componentDidUpdate(){
-    if(this.state.timer%60===0&&this.state.timer>1)
-    {
-      this.setState({minute: this.state.minute +1, timer: 0})
-    }
-  }
-
-  render() {
-
+  let buttons= () => {
     return (
-      <div className="App">
-        <h1>Counter</h1>
-        <span>
-          {this.state.minute}
-        </span>
-        <span> min </span>
-        <span >
-          {this.state.timer}
-        </span>
-        <span> sec</span>
-        <div className="Buttons">
-          <button id="start" disabled={!this.state.startButton} onClick={(e)=>this.handleStart(e)}>
-            Start
-          </button>
-          <button id="pause" disabled={!this.state.pauseButton} onClick={(e)=>this.handlePause(e)}>
-            Pause
-          </button>
-          <button id="reset" disabled={!this.state.resetButton} onClick={(e)=>this.handleReset(e)}>
-            Reset
-          </button>
-          
-        </div>
-        
-
-        
-      </div>
+      <div className="Buttons">
+        <button id="start" disabled={!isStartBtnEnabled} onClick={(e)=>handleStart(e)}>
+          Start
+        </button>
+        <button id="pause" disabled={!isPauseBtnEnabled} onClick={(e)=>handlePause(e)}>
+          Pause
+        </button>
+        <button id="reset" disabled={!isResetBtnEnabled} onClick={(e)=>handleReset(e)}>
+          Reset
+        </button> 
+      </div> 
     );
   }
-  
+
+  return (
+    <div className="App">
+      <h1>Counter</h1>
+      <span>{Math.floor(timer/60)}</span>
+      <span> min </span>
+      <span>{timer%60}</span>
+      <span> sec</span>
+      {buttons()}    
+    </div>
+  );
 }
 
 export default App;
